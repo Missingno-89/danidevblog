@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, Container, Navbar } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./blognavbar.css";
 
 const NavBar = () => {
@@ -9,17 +9,25 @@ const NavBar = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    let cancelled = false;
+
     const getUser = async () => {
       const token = sessionStorage.getItem("token");
 
       if (!token) {
-        setLoading(false);
+        if (!cancelled) {
+          setUser(null);
+          setLoading(false);
+        }
         return;
       }
 
       try {
+        setLoading(true);
+
         const response = await fetch(
           `${process.env.REACT_APP_API_URL}/auth/me`,
           {
@@ -34,18 +42,36 @@ const NavBar = () => {
         }
 
         const data = await response.json();
-        setUser(data);
+
+        if (!cancelled) {
+          setUser(data);
+        }
+
       } catch (error) {
         console.error(error.message);
-        sessionStorage.removeItem("token");
-        setUser(null);
+
+        if (!cancelled) {
+          setUser(null);
+
+          // Eliminiamo il token solo se non è cambiato
+          if (sessionStorage.getItem("token") === token) {
+            sessionStorage.removeItem("token");
+          }
+        }
+
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     getUser();
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [location.pathname]);
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -58,7 +84,11 @@ const NavBar = () => {
       <Container className="magazine-navbar-container">
 
         {/* Logo */}
-        <Navbar.Brand as={Link} to="/" className="magazine-logo">
+        <Navbar.Brand
+          as={Link}
+          to="/"
+          className="magazine-logo"
+        >
           DANI<span>DEV.</span>
         </Navbar.Brand>
 
@@ -98,6 +128,7 @@ const NavBar = () => {
                 </span>
 
                 <button
+                  type="button"
                   className="magazine-logout"
                   onClick={handleLogout}
                 >
@@ -105,7 +136,10 @@ const NavBar = () => {
                 </button>
               </>
             ) : (
-              <Link to="/login" className="magazine-login">
+              <Link
+                to="/login"
+                className="magazine-login"
+              >
                 Accedi
               </Link>
             )
