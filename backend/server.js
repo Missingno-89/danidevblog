@@ -11,6 +11,7 @@ import passport from "passport";
 import GoogleStrategy from "./strategies/google.js";
 
 const server = express();
+const PORT = process.env.PORT || 9097;
 
 server.use(cors({
   origin: [
@@ -35,7 +36,9 @@ try {
     console.error("Errore connessione:", error);
 }
 
-server.listen(9097, () => {
-    console.log("Server avviato sulla porta 9097");
+
+
+server.listen(PORT, () => {
+  console.log(`Server avviato sulla porta ${PORT}`);
 });
 
