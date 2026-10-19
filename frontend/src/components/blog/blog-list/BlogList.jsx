@@ -12,7 +12,7 @@ const BlogList = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          "http://localhost:9097/blogPosts"
+          `${process.env.REACT_APP_API_URL}/blogPosts`
         );
 
         if (!response.ok) {

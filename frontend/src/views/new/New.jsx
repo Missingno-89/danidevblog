@@ -1,8 +1,10 @@
 
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import "./new.css";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 const NewBlogPost = () => {
   const navigate = useNavigate();
@@ -41,6 +43,7 @@ const NewBlogPost = () => {
     return () => URL.revokeObjectURL(imageUrl);
   }, [coverFile]);
 
+  // Aggiorniamo i dati del modulo
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -50,6 +53,7 @@ const NewBlogPost = () => {
     }));
   };
 
+  // Selezioniamo e controlliamo l'immagine
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
 
@@ -62,12 +66,14 @@ const NewBlogPost = () => {
 
     if (!acceptedTypes.includes(file.type)) {
       setError("Seleziona un'immagine JPG o PNG.");
+      setCoverFile(null);
       e.target.value = "";
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       setError("L'immagine non può superare 5 MB.");
+      setCoverFile(null);
       e.target.value = "";
       return;
     }
@@ -76,6 +82,7 @@ const NewBlogPost = () => {
     setCoverFile(file);
   };
 
+  // Convertiamo il testo in paragrafi HTML
   const formatContent = (text) => {
     const escaped = text
       .replace(/&/g, "&amp;")
@@ -93,6 +100,7 @@ const NewBlogPost = () => {
       .join("");
   };
 
+  // Pubblicazione dell'articolo
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -103,7 +111,7 @@ const NewBlogPost = () => {
     const token = sessionStorage.getItem("token");
 
     if (!token) {
-      setError("Devi accedere con Google.");
+      setError("Devi accedere con Google per pubblicare.");
       return;
     }
 
@@ -117,12 +125,13 @@ const NewBlogPost = () => {
     let createdPostId = null;
 
     try {
+      // Calcoliamo il tempo di lettura
       const words = form.content.trim().split(/\s+/).length;
       const minutes = Math.max(1, Math.ceil(words / 200));
 
       // 1. Creiamo il post su MongoDB
       const response = await fetch(
-        "http://localhost:9097/blogPosts",
+        `${API_URL}/blogPosts`,
         {
           method: "POST",
           headers: {
@@ -158,7 +167,7 @@ const NewBlogPost = () => {
         formData.append("cover", coverFile);
 
         const uploadResponse = await fetch(
-          `http://localhost:9097/blogPosts/${post._id}/cover`,
+          `${API_URL}/blogPosts/${post._id}/cover`,
           {
             method: "PATCH",
             headers: {
@@ -169,7 +178,8 @@ const NewBlogPost = () => {
         );
 
         if (!uploadResponse.ok) {
-          const uploadError = await uploadResponse.json()
+          const uploadError = await uploadResponse
+            .json()
             .catch(() => ({}));
 
           throw new Error(
@@ -185,6 +195,7 @@ const NewBlogPost = () => {
     } catch (err) {
       if (createdPostId) {
         setPublishedId(createdPostId);
+
         setError(
           "L'articolo è stato creato, ma la copertina " +
           "non è stata caricata. Non ripubblicarlo."
@@ -193,7 +204,8 @@ const NewBlogPost = () => {
         setError(err.message);
       }
 
-      console.error(err);
+      console.error("Errore pubblicazione:", err);
+
     } finally {
       setLoading(false);
     }
@@ -203,6 +215,7 @@ const NewBlogPost = () => {
     <main className="editor-page">
       <Container className="editor-container">
 
+        {/* Intestazione editor */}
         <div className="editor-heading">
           <span className="editor-eyebrow">
             DANI DEV BLOG / EDITOR
@@ -216,8 +229,12 @@ const NewBlogPost = () => {
           </p>
         </div>
 
-        <Form onSubmit={handleSubmit} className="editor-form">
+        <Form
+          onSubmit={handleSubmit}
+          className="editor-form"
+        >
 
+          {/* Categoria */}
           <Form.Group className="mb-4">
             <Form.Label>Categoria</Form.Label>
 
@@ -227,18 +244,23 @@ const NewBlogPost = () => {
               onChange={handleChange}
             >
               {categories.map((category) => (
-                <option key={category} value={category}>
+                <option
+                  key={category}
+                  value={category}
+                >
                   {category}
                 </option>
               ))}
             </Form.Select>
           </Form.Group>
 
+          {/* Titolo */}
           <Form.Group className="mb-4">
             <Form.Label>Titolo dell'articolo</Form.Label>
 
             <Form.Control
               name="title"
+              type="text"
               value={form.title}
               onChange={handleChange}
               placeholder="Scrivi il titolo..."
@@ -247,8 +269,11 @@ const NewBlogPost = () => {
             />
           </Form.Group>
 
+          {/* Copertina */}
           <Form.Group className="mb-4">
-            <Form.Label>Copertina dell'articolo</Form.Label>
+            <Form.Label>
+              Copertina dell'articolo
+            </Form.Label>
 
             <div className="editor-upload-area">
               <Form.Control
@@ -274,8 +299,11 @@ const NewBlogPost = () => {
             )}
           </Form.Group>
 
+          {/* Contenuto */}
           <Form.Group className="mb-4">
-            <Form.Label>Contenuto dell'articolo</Form.Label>
+            <Form.Label>
+              Contenuto dell'articolo
+            </Form.Label>
 
             <Form.Control
               as="textarea"
@@ -288,12 +316,14 @@ const NewBlogPost = () => {
             />
           </Form.Group>
 
+          {/* Messaggi di errore */}
           {error && (
             <p className="editor-error" role="alert">
               {error}
             </p>
           )}
 
+          {/* Articolo già creato */}
           {publishedId && (
             <p>
               <Link to={`/blog/${publishedId}`}>
@@ -302,6 +332,7 @@ const NewBlogPost = () => {
             </p>
           )}
 
+          {/* Pulsanti */}
           <div className="editor-actions">
             <Button
               type="button"

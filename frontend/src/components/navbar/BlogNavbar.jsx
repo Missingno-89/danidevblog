@@ -21,7 +21,7 @@ const NavBar = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:9097/auth/me",
+          `${process.env.REACT_APP_API_URL}/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`
