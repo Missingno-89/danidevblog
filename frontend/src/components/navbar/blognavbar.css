@@ -1,0 +1,131 @@
+
+.magazine-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  padding: 18px 0;
+  box-shadow: none;
+  z-index: 1000;
+}
+
+.magazine-navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Logo */
+
+.magazine-logo {
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: #181818 !important;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.magazine-logo span {
+  color: #e76f40;
+}
+
+/* Navigazione */
+
+.magazine-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
+.magazine-nav-links a {
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.magazine-nav-links a:hover {
+  color: #e76f40;
+}
+
+/* Area utente */
+
+.magazine-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.magazine-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eeeeee;
+}
+
+.magazine-username {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.magazine-write-btn {
+  background: #181818 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 9px 16px !important;
+}
+
+.magazine-write-btn:hover {
+  background: #e76f40 !important;
+}
+
+.magazine-logout,
+.magazine-login {
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.magazine-logout:hover,
+.magazine-login:hover {
+  color: #e76f40;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .magazine-navbar {
+    padding: 12px 0;
+  }
+
+  .magazine-logo {
+    font-size: 20px;
+  }
+
+  .magazine-nav-links {
+    display: none;
+  }
+
+  .magazine-username {
+    display: none;
+  }
+
+  .magazine-user {
+    gap: 8px;
+  }
+
+  .magazine-write-btn {
+    padding: 7px 10px !important;
+    font-size: 12px !important;
+  }
+}

@@ -1,0 +1,53 @@
+
+.magazine-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.magazine-author-avatar,
+.magazine-author-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.magazine-author-avatar {
+  object-fit: cover;
+  border: 2px solid #eae7e1;
+}
+
+.magazine-author-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #181818;
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.magazine-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.magazine-author-info span {
+  color: #999;
+  font-size: 12px;
+}
+
+.magazine-author-info strong {
+  color: #181818;
+  font-size: 15px;
+}
+
+@media (max-width: 767px) {
+  .magazine-author-avatar,
+  .magazine-author-placeholder {
+    width: 40px;
+    height: 40px;
+  }
+}

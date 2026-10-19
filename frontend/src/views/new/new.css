@@ -1,0 +1,57 @@
+
+/* AREA UPLOAD */
+
+.editor-upload-area {
+  border: 2px dashed #dedbd5;
+  border-radius: 12px;
+  background: #faf9f6;
+  padding: 30px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+
+.editor-upload-area:hover {
+  border-color: #e76f40;
+}
+
+.editor-upload-area input {
+  background: white;
+  cursor: pointer;
+}
+
+.editor-upload-area p {
+  color: #888;
+  font-size: 13px;
+  margin: 15px 0 0;
+}
+
+/* ANTEPRIMA */
+
+.editor-image-preview {
+  margin-top: 20px;
+}
+
+.editor-image-preview img {
+  display: block;
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.editor-image-preview span {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #888;
+}
+
+@media (max-width: 767px) {
+  .editor-upload-area {
+    padding: 18px;
+  }
+
+  .editor-image-preview img {
+    max-height: 240px;
+  }
+}

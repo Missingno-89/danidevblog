@@ -1,0 +1,48 @@
+
+.magazine-posts {
+  width: 100%;
+}
+
+.magazine-featured {
+  margin-bottom: 70px;
+}
+
+.magazine-grid-heading {
+  border-top: 1px solid #dedbd5;
+  padding-top: 35px;
+  margin-bottom: 30px;
+}
+
+.magazine-grid-heading h3 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.magazine-post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 35px;
+}
+
+/* TABLET */
+
+@media (max-width: 1024px) {
+  .magazine-post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+  }
+}
+
+/* SMARTPHONE */
+
+@media (max-width: 767px) {
+  .magazine-featured {
+    margin-bottom: 45px;
+  }
+
+  .magazine-post-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
