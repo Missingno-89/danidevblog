@@ -4,6 +4,7 @@ import { Container, Image } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import BlogAuthor from "../../components/blog/blog-author/BlogAuthor";
 import BlogLike from "../../components/likes/BlogLike";
+import BlogComments from "../../components/blog/blog-comments/BlogComments";
 import "./blog.css";
 
 const Blog = () => {
@@ -191,6 +192,7 @@ const Blog = () => {
             __html: blog.content || ""
           }}
         />
+        <BlogComments postId={id} />
 
       </Container>
     </div>
