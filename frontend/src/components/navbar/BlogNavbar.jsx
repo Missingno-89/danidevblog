@@ -7,6 +7,7 @@ import "./blognavbar.css";
 const NavBar = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -93,10 +94,29 @@ const NavBar = () => {
         </Navbar.Brand>
 
         {/* Navigazione */}
-        <div className="magazine-nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/#articoli">Articoli</Link>
+
+        {/* Menu di navigazione */}
+        <div className={`magazine-nav-links ${menuOpen ? "open" : ""}`}>
+          <Link to="/" onClick={() => setMenuOpen(false)}>
+            Home
+          </Link>
+
+          <Link to="/#articoli" onClick={() => setMenuOpen(false)}>
+            Articoli
+          </Link>
         </div>
+
+        {/* Pulsante hamburger per mobile */}
+        <button
+          type="button"
+          className="magazine-menu-toggle"
+          aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? "✕" : "☰"}
+        </button>
+
 
         {/* Area utente */}
         <div className="magazine-user">
