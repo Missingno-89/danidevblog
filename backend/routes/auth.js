@@ -1,12 +1,12 @@
 import express from "express";
-import { login, me } from "../controllers/auth.js";
+import { login, me, register } from "../controllers/auth.js";
 import { authenticate } from "../middlewares/authenticate.js";
 import passport from "passport";
 
 
 const Authrouter = express.Router();
 
-
+Authrouter.post("/register", register);
 Authrouter.post("/login", login);
 
 

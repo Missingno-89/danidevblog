@@ -1,13 +1,21 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./login.css";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Gestiamo il ritorno dal login Google
   useEffect(() => {
     const token = searchParams.get("token");
 
@@ -17,22 +25,124 @@ const Login = () => {
     }
   }, [searchParams, navigate]);
 
+  // Login classico con email e password
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email.trim() || !password) {
+      setError("Inserisci email e password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Email o password non corretti"
+        );
+      }
+
+      if (!data.token) {
+        throw new Error("Il server non ha restituito un token.");
+      }
+
+      // Salviamo lo stesso JWT utilizzato dal login Google
+      sessionStorage.setItem("token", data.token);
+
+      // Torniamo alla homepage
+      navigate("/", { replace: true });
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGoogleLogin = () => {
-    window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (
     <Container className="login-page">
       <div className="login-card">
+
         <div className="login-icon">DD.</div>
 
         <h1>Benvenuto su Dani Dev Blog</h1>
 
         <p className="login-description">
-          Il luogo dove il codice incontra idee, creatività e cultura digitale.
-          Accedi per leggere, scrivere e condividere le tue storie.
+          Il luogo dove il codice incontra idee,
+          creatività e cultura digitale.
+          Accedi per scrivere e condividere le tue storie.
         </p>
 
+        {/* LOGIN CLASSICO */}
+        <form className="classic-login-form" onSubmit={handleLogin}>
+
+          <label htmlFor="login-email">Email</label>
+          <input
+            id="login-email"
+            type="email"
+            placeholder="La tua email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            required
+          />
+
+          <label htmlFor="login-password">Password</label>
+          <input
+            id="login-password"
+            type="password"
+            placeholder="La tua password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+
+          {error && (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="classic-login-btn"
+            disabled={loading}
+          >
+            {loading ? "Accesso in corso..." : "Accedi"}
+          </button>
+
+        </form>
+
+        <p className="login-register-link">
+          Non hai un account?{" "}
+          <Link to="/register">Registrati</Link>
+        </p>
+
+        <div className="login-divider">
+          <span>oppure</span>
+        </div>
+
+        {/* LOGIN GOOGLE */}
         <button
           type="button"
           className="google-login-btn"
@@ -66,8 +176,9 @@ const Login = () => {
         </button>
 
         <p className="login-footer">
-          Accedi in modo semplice e sicuro utilizzando il tuo account Google.
+          Scegli come accedere al tuo account.
         </p>
+
       </div>
     </Container>
   );
