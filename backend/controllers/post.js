@@ -189,41 +189,59 @@ export const uploadCover = async (req, res) => {
 };
 
 
+
 export async function createComment(req, res) {
     try {
         const { id } = req.params;
         const { text } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "invalid post id" });
-        }
-
-        const post = await Post.findById(id);
-
-        if (!post) {
-            return res.status(404).json({ message: "post not found" });
-        }
-
-        if (!author || !text) {
             return res.status(400).json({
-                message: "author and text are required"
+                message: "ID articolo non valido"
             });
         }
 
+        
+        if (typeof text !== "string" || !text.trim()) {
+            return res.status(400).json({
+                message: "Il commento non può essere vuoto"
+            });
+        }
+
+        
+        const post = await Post.findById(id);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Articolo non trovato"
+            });
+        }
+
+       
+        const authorName = [
+            req.author.name,
+            req.author.surname
+        ].filter(Boolean).join(" ");
+
+        
         const comment = new Comment({
-            author: req.author,
-            text,
+            author: authorName,
+            text: text.trim(),
             post: post._id
         });
 
+        
         const savedComment = await comment.save();
 
-        res.status(201).json(savedComment);
+        return res.status(201).json(savedComment);
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({
+            message: error.message
+        });
     }
 }
+
 
 export async function getComments(req, res) {
     try {

@@ -23,7 +23,7 @@ PostRouter.post("/", authenticate, createPost);
 PostRouter.put("/:id", updatePost);
 PostRouter.delete("/:id", authenticate, deletePost);
 PostRouter.patch("/:id/cover",authenticate,uploadImg.single("cover"),uploadCover);
-PostRouter.post("/:id", createComment);
+PostRouter.post("/:id/comments", authenticate, createComment);
 PostRouter.get("/:id/comments", getComments);
 PostRouter.get("/:id/comments/:commentId", getCommentById);
 PostRouter.put("/:id/comments/:commentId", updateComment);
